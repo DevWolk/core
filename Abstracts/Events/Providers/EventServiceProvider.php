@@ -8,12 +8,11 @@ use Illuminate\Events\EventServiceProvider as BaseEventServiceProvider;
 
 class EventServiceProvider extends BaseEventServiceProvider
 {
+    /**
+     * @inheritDoc
+     */
     public function register()
     {
-        $this->app->singleton('events', function ($app) {
-            return (new Dispatcher($app))->setQueueResolver(function () use ($app) {
-                return $app->make(QueueFactoryContract::class);
-            });
-        });
+        $this->app->singleton('events', fn ($app) => (new Dispatcher($app))->setQueueResolver(fn () => $app->make(QueueFactoryContract::class)));
     }
 }
