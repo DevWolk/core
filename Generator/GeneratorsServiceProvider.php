@@ -80,16 +80,13 @@ class GeneratorsServiceProvider extends ServiceProvider
 
     /**
      * Register the generators.
-     * @param array $classes
      */
     private function registerGenerators(array $classes): void
     {
         foreach ($classes as $class) {
             $lowerClass = strtolower($class);
 
-            $this->app->singleton("command.porto.$lowerClass", function ($app) use ($class) {
-                return $app[$class];
-            });
+            $this->app->singleton("command.porto.$lowerClass", fn ($app) => $app[$class]);
 
             $this->commands("command.porto.$lowerClass");
         }

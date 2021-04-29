@@ -15,18 +15,13 @@ use Illuminate\Foundation\Testing\TestCase as LaravelTestCase;
 
 abstract class TestCase extends LaravelTestCase
 {
-    use TestCaseTrait,
-        TestsRequestHelperTrait,
-        TestsResponseHelperTrait,
-        TestsMockHelperTrait,
-        TestsAuthHelperTrait,
-        HashIdTrait,
-        RefreshDatabase;
-
-    /**
-     * The base URL to use while testing the application.
-     */
-    protected string $baseUrl;
+    use HashIdTrait;
+    use RefreshDatabase;
+    use TestCaseTrait;
+    use TestsAuthHelperTrait;
+    use TestsMockHelperTrait;
+    use TestsRequestHelperTrait;
+    use TestsResponseHelperTrait;
 
     /**
      * Setup the test environment, before each test.
@@ -46,7 +41,7 @@ abstract class TestCase extends LaravelTestCase
 
     /**
      * Refresh the in-memory database.
-     * Overridden refreshTestDatabase Trait
+     * Overridden refreshTestDatabase Trait.
      */
     protected function refreshInMemoryDatabase(): void
     {
@@ -64,7 +59,7 @@ abstract class TestCase extends LaravelTestCase
 
     /**
      * Refresh a conventional test database.
-     * Overridden refreshTestDatabase Trait
+     * Overridden refreshTestDatabase Trait.
      */
     protected function refreshTestDatabase(): void
     {

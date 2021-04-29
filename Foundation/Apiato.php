@@ -4,16 +4,26 @@ namespace Apiato\Core\Foundation;
 
 use Illuminate\Support\Facades\File;
 
+/**
+ * Class Apiato.
+ *
+ * Helper Class to serve Apiato (Ship/Containers).
+ */
 class Apiato
 {
     /**
      * The Apiato version.
+     *
+     * @var string
      */
     public const VERSION = '10.0.0';
 
     private const SHIP_NAME = 'ship';
     private const CONTAINERS_DIRECTORY_NAME = 'Containers';
 
+    /**
+     * @psalm-return string[]
+     */
     public function getShipFoldersNames(): array
     {
         $portFoldersNames = [];
@@ -45,26 +55,22 @@ class Apiato
     }
 
     /**
-     * Build and return an object of a class from its file path
+     * Build and return an object of a class from its file path.
      *
      * @param $filePathName
-     *
-     * @return  mixed
      */
     public function getClassObjectFromFile($filePathName)
     {
         $classString = $this->getClassFullNameFromFile($filePathName);
 
-        return new $classString;
+        return new $classString();
     }
 
     /**
      * Get the full name (name \ namespace) of a class from its file path
-     * result example: (string) "I\Am\The\Namespace\Of\This\Class"
+     * result example: (string) "I\Am\The\Namespace\Of\This\Class".
      *
      * @param $filePathName
-     *
-     * @return  string
      */
     public function getClassFullNameFromFile($filePathName): string
     {
@@ -72,29 +78,28 @@ class Apiato
     }
 
     /**
-     * Get the class namespace form file path using token
+     * Get the class namespace form file path using token.
      *
      * @param $filePathName
-     *
-     * @return  null|string
      */
     protected function getClassNamespaceFromFile($filePathName): ?string
     {
         $src = file_get_contents($filePathName);
 
-        $tokens = token_get_all($src);
-        $count = count($tokens);
-        $i = 0;
-        $namespace = '';
+        $tokens       = token_get_all($src);
+        $count        = count($tokens);
+        $i            = 0;
+        $namespace    = '';
         $namespace_ok = false;
         while ($i < $count) {
             $token = $tokens[$i];
+
             if (is_array($token) && $token[0] === T_NAMESPACE) {
                 // Found namespace declaration
                 while (++$i < $count) {
                     if ($tokens[$i] === ';') {
                         $namespace_ok = true;
-                        $namespace = trim($namespace);
+                        $namespace    = trim($namespace);
                         break;
                     }
                     $namespace .= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
@@ -103,6 +108,7 @@ class Apiato
             }
             $i++;
         }
+
         if (!$namespace_ok) {
             return null;
         }
@@ -111,26 +117,24 @@ class Apiato
     }
 
     /**
-     * Get the class name from file path using token
+     * Get the class name from file path using token.
      *
      * @param $filePathName
-     *
-     * @return  mixed
      */
     protected function getClassNameFromFile($filePathName)
     {
         $php_code = file_get_contents($filePathName);
 
         $classes = [];
-        $tokens = token_get_all($php_code);
-        $count = count($tokens);
+        $tokens  = token_get_all($php_code);
+        $count   = count($tokens);
         for ($i = 2; $i < $count; $i++) {
-            if ($tokens[$i - 2][0] == T_CLASS
-                && $tokens[$i - 1][0] == T_WHITESPACE
-                && $tokens[$i][0] == T_STRING
-            ) {
+            if ($tokens[$i - 2][0] === T_CLASS
+        && $tokens[$i - 1][0] === T_WHITESPACE
+        && $tokens[$i][0] === T_STRING
+      ) {
                 $class_name = $tokens[$i][1];
-                $classes[] = $class_name;
+                $classes[]  = $class_name;
             }
         }
 
@@ -139,11 +143,9 @@ class Apiato
 
     /**
      * Get the last part of a camel case string.
-     * Example input = helloDearWorld | returns = World
+     * Example input = helloDearWorld | returns = World.
      *
      * @param $className
-     *
-     * @return  mixed
      */
     public function getClassType($className)
     {

@@ -16,17 +16,20 @@ use Symfony\Component\Console\Input\InputOption;
 
 abstract class GeneratorCommand extends Command
 {
-    use ParserTrait, PrinterTrait, FileSystemTrait, FormatterTrait;
+    use FileSystemTrait;
+    use FormatterTrait;
+    use ParserTrait;
+    use PrinterTrait;
 
     /**
-     * Root directory of all sections
+     * Root directory of all sections.
      *
      * @var string
      */
     private const ROOT = 'app/Containers';
 
     /**
-     * Relative path for the stubs (relative to this directory / file)
+     * Relative path for the stubs (relative to this directory / file).
      *
      * @var string
      */
@@ -44,10 +47,7 @@ abstract class GeneratorCommand extends Command
      */
     private const DEFAULT_SECTION_NAME = 'AppSection';
 
-    /**
-     * @var string
-     */
-    protected string $filePath;
+    protected ?string $filePath = null;
 
     /**
      * @var string the name of the section to generate the stubs
@@ -57,19 +57,25 @@ abstract class GeneratorCommand extends Command
     /**
      * @var string the name of the container to generate the stubs
      */
-    protected string $containerName;
+    protected ?string $containerName = null;
 
     /**
      * @var string The name of the file to be created (entered by the user)
      */
     protected string $fileName;
 
-    protected $userData;
+    protected string $userData;
 
-    protected $parsedFileName;
+    protected string $parsedFileName;
 
+    /**
+     * @var string
+     */
     protected $stubContent;
 
+    /**
+     * @var string
+     */
     protected $renderedStubContent;
 
     private IlluminateFilesystem $fileSystem;
@@ -88,23 +94,22 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * @void
-     *
      * @throws GeneratorErrorException|FileNotFoundException
      */
-    public function handle()
+    public function handle(): ?int
     {
         $this->validateGenerator($this);
 
-        $this->sectionName = ucfirst($this->checkParameterOrAsk('section', 'Enter the name of the Section', self::DEFAULT_SECTION_NAME));
+        $this->sectionName   = ucfirst($this->checkParameterOrAsk('section', 'Enter the name of the Section', self::DEFAULT_SECTION_NAME));
         $this->containerName = ucfirst($this->checkParameterOrAsk('container', 'Enter the name of the Container'));
-        $this->fileName = $this->checkParameterOrAsk('file', 'Enter the name of the ' . $this->fileType . ' file', $this->getDefaultFileName());
+        $this->fileName      = $this->checkParameterOrAsk('file', 'Enter the name of the ' . $this->fileType . ' file', $this->getDefaultFileName());
 
         // Now fix the section, container and file name
-        $this->sectionName = $this->removeSpecialChars($this->sectionName);
+        $this->sectionName   = $this->removeSpecialChars($this->sectionName);
         $this->containerName = $this->removeSpecialChars($this->containerName);
-        if (!$this->fileType === 'Configuration')
+        if (!$this->fileType === 'Configuration') {
             $this->fileName = $this->removeSpecialChars($this->fileName);
+        }
 
         // And we are ready to start
         $this->printStartedMessage($this->sectionName . ':' . $this->containerName, $this->fileName);
@@ -114,17 +119,18 @@ abstract class GeneratorCommand extends Command
 
         if ($this->userData === null) {
             // The user skipped this step
-            return;
+            return null;
         }
         $this->userData = $this->sanitizeUserData($this->userData);
 
         // Get the actual path of the output file as well as the correct filename
         $this->parsedFileName = $this->parseFileStructure($this->nameStructure, $this->userData['file-parameters']);
-        $this->filePath = $this->getFilePath($this->parsePathStructure($this->pathStructure, $this->userData['path-parameters']));
+        $this->filePath       = $this->getFilePath($this->parsePathStructure($this->pathStructure, $this->userData['path-parameters']));
 
         if (!$this->fileSystem->exists($this->filePath)) {
+
             // Prepare stub content
-            $this->stubContent = $this->getStubContent();
+            $this->stubContent         = $this->getStubContent();
             $this->renderedStubContent = $this->parseStubContent($this->stubContent, $this->userData['stub-parameters']);
 
             $this->generateFile($this->filePath, $this->renderedStubContent);
@@ -137,7 +143,7 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * @param $generator
+     * @param static $generator
      *
      * @throws GeneratorErrorException
      */
@@ -151,18 +157,18 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * Checks if the param is set (via CLI), otherwise asks the user for a value
+     * Checks if the param is set (via CLI), otherwise asks the user for a value.
      *
-     * @param $param
-     * @param $question
      * @param null $default
+     *
      * @return array|string
      */
-    protected function checkParameterOrAsk($param, $question, $default = null)
+    protected function checkParameterOrAsk(string $param, string $question, $default = null)
     {
         // Check if we have already have a param set
         $value = $this->option($param);
-        if ($value == null) {
+
+        if ($value === null) {
             // There was no value provided via CLI, so ask the user..
             $value = $this->ask($question, $default);
         }
@@ -171,7 +177,7 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * Get the default file name for this component to be generated
+     * Get the default file name for this component to be generated.
      */
     protected function getDefaultFileName(): string
     {
@@ -179,24 +185,19 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * Removes "special characters" from a string
-     * @param $str
-     * @return string
+     * Removes "special characters" from a string.
      */
-    protected function removeSpecialChars($str): string
+    protected function removeSpecialChars(string $str): string
     {
         // remove everything that is NOT a character or digit
-        $str = preg_replace('/[^A-Za-z0-9]/', '', $str);
-
-        return $str;
+        return preg_replace('/[^A-Za-z0-9]/', '', $str);
     }
 
     /**
      * Checks, if the data from the generator contains path, stub and file-parameters.
-     * Adds empty arrays, if they are missing
+     * Adds empty arrays, if they are missing.
      *
      * @param $data
-     * @return mixed
      */
     private function sanitizeUserData($data)
     {
@@ -215,7 +216,7 @@ abstract class GeneratorCommand extends Command
         return $data;
     }
 
-    protected function getFilePath($path): string
+    protected function getFilePath(string $path): string
     {
         // Complete the missing parts of the path
         $path = base_path() . '/' .
@@ -237,7 +238,6 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * @return  mixed
      * @throws FileNotFoundException
      */
     protected function getStubContent()
@@ -258,7 +258,7 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * Get all the console command arguments, from the components. The default arguments are prepended
+     * Get all the console command arguments, from the components. The default arguments are prepended.
      */
     protected function getOptions(): array
     {
@@ -269,7 +269,7 @@ abstract class GeneratorCommand extends Command
      * @param      $arg
      * @param bool $trim
      *
-     * @return  array|string
+     * @return array|string
      */
     protected function getInput($arg, $trim = true)
     {
@@ -277,19 +277,19 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * Checks if the param is set (via CLI), otherwise proposes choices to the user
+     * Checks if the param is set (via CLI), otherwise proposes choices to the user.
      *
-     * @param $param
-     * @param $question
-     * @param $choices
-     * @param null $default
-     * @return array|string
+     * @param string[] $choices
+     * @param null     $default
+     *
+     * @return array|string|true
      */
-    protected function checkParameterOrChoice($param, $question, $choices, $default = null)
+    protected function checkParameterOrChoice(string $param, string $question, array $choices, $default = null)
     {
         // Check if we have already have a param set
         $value = $this->option($param);
-        if ($value == null) {
+
+        if ($value === null) {
             // There was no value provided via CLI, so ask the user..
             $value = $this->choice($question, $choices, $default);
         }
@@ -298,16 +298,13 @@ abstract class GeneratorCommand extends Command
     }
 
     /**
-     * @param      $param
-     * @param      $question
      * @param bool $default
-     *
-     * @return mixed
      */
-    protected function checkParameterOrConfirm($param, $question, $default = false)
+    protected function checkParameterOrConfirm(string $param, string $question, $default = false)
     {
         // Check if we have already have a param set
         $value = $this->option($param);
+
         if ($value === null) {
             // There was no value provided via CLI, so ask the user..
             $value = $this->confirm($question, $default);

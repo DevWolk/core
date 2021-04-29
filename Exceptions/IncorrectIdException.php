@@ -8,5 +8,6 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class IncorrectIdException extends Exception
 {
     protected $code = SymfonyResponse::HTTP_BAD_REQUEST;
+
     protected $message = 'ID input is incorrect.';
 }
