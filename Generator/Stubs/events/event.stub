@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Containers\{{section-name}}\{{container-name}}\Events\Events;
 
 use App\Ship\Parents\Events\Event;
@@ -14,10 +16,8 @@ class {{class-name}} extends Event
 
     /**
      * {{class-name}} constructor.
-     *
-     * @param $entity
      */
-    public function __construct($entity)
+    public function __construct({{model}} $entity)
     {
         $this->entity = $entity;
     }

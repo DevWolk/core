@@ -4,7 +4,6 @@ namespace Apiato\Core\Abstracts\Transformers;
 
 use Apiato\Core\Exceptions\CoreInternalErrorException;
 use Apiato\Core\Exceptions\UnsupportedFractalIncludeException;
-use ErrorException;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +36,6 @@ abstract class Transformer extends FractalTransformer
     }
 
     /**
-     * @param mixed $data
      * @param callable|FractalTransformer $transformer
      * @param null                        $resourceKey
      */
@@ -52,7 +50,6 @@ abstract class Transformer extends FractalTransformer
     }
 
     /**
-     * @param mixed $data
      * @param callable|FractalTransformer $transformer
      * @param null                        $resourceKey
      */

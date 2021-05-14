@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Containers\{{section-name}}\{{container-name}}\Tasks;
 
 use App\Containers\{{section-name}}\{{container-name}}\Data\Repositories\{{model}}Repository;
+use App\Containers\{{section-name}}\{{container-name}}\Models\{{model}};
 use App\Ship\Exceptions\UpdateResourceFailedException;
 use App\Ship\Parents\Tasks\Task;
 use Exception;
@@ -16,12 +19,11 @@ class Update{{model}}Task extends Task
         $this->repository = $repository;
     }
 
-    public function run($id, array $data)
+    public function run(int $id, array $data): {{model}}
     {
         try {
             return $this->repository->update($data, $id);
-        }
-        catch (Exception $exception) {
+        } catch (Exception $exception) {
             throw new UpdateResourceFailedException();
         }
     }

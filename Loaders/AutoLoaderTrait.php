@@ -7,13 +7,13 @@ use Apiato\Core\Foundation\Facades\Apiato;
 trait AutoLoaderTrait
 {
     // Using each component loader trait
+    use AliasesLoaderTrait;
     use ConfigsLoaderTrait;
+    use ConsolesLoaderTrait;
     use LocalizationLoaderTrait;
     use MigrationsLoaderTrait;
-    use ViewsLoaderTrait;
     use ProvidersLoaderTrait;
-    use ConsolesLoaderTrait;
-    use AliasesLoaderTrait;
+    use ViewsLoaderTrait;
     use HelpersLoaderTrait;
 
     /**

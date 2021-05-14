@@ -2,15 +2,11 @@
 
 namespace Apiato\Core\Loaders;
 
-use App;
 use Illuminate\Contracts\Http\Kernel;
 
 trait MiddlewaresLoaderTrait
 {
-    /**
-     * @void
-     */
-    public function loadMiddlewares()
+    public function loadMiddlewares(): void
     {
         $this->registerMiddleware($this->middlewares);
         $this->registerMiddlewareGroups($this->middlewareGroups);
@@ -19,11 +15,9 @@ trait MiddlewaresLoaderTrait
     }
 
     /**
-     * Registering Route Group's
-     *
-     * @param array $middlewares
+     * Registering Route Group's.
      */
-    private function registerMiddleware(array $middlewares = [])
+    private function registerMiddleware(array $middlewares = []): void
     {
         $httpKernel = $this->app->make(Kernel::class);
 
@@ -33,11 +27,9 @@ trait MiddlewaresLoaderTrait
     }
 
     /**
-     * Registering Route Group's
-     *
-     * @param array $middlewareGroups
+     * Registering Route Group's.
      */
-    private function registerMiddlewareGroups(array $middlewareGroups = [])
+    private function registerMiddlewareGroups(array $middlewareGroups = []): void
     {
         foreach ($middlewareGroups as $key => $middleware) {
             if (!is_array($middleware)) {
@@ -65,13 +57,11 @@ trait MiddlewaresLoaderTrait
     }
 
     /**
-     * Registering Route Middleware's
-     *
-     * @param array $routeMiddleware
+     * Registering Route Middleware's.
      */
-    private function registerRouteMiddleware(array $routeMiddleware = [])
+    private function registerRouteMiddleware(array $routeListMiddleware = []): void
     {
-        foreach ($routeMiddleware as $key => $routeMiddleware) {
+        foreach ($routeListMiddleware as $key => $routeMiddleware) {
             $this->app['router']->aliasMiddleware($key, $routeMiddleware);
         }
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Containers\{{section-name}}\{{container-name}}\Tasks;
 
 use App\Containers\{{section-name}}\{{container-name}}\Data\Repositories\{{model}}Repository;
@@ -16,12 +18,11 @@ class Delete{{model}}Task extends Task
         $this->repository = $repository;
     }
 
-    public function run($id): ?int
+    public function run($id): bool
     {
         try {
-            return $this->repository->delete($id);
-        }
-        catch (Exception $exception) {
+            return (bool)$this->repository->delete($id);
+        } catch (Exception $exception) {
             throw new DeleteResourceFailedException();
         }
     }

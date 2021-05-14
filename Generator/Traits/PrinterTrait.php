@@ -4,7 +4,7 @@ namespace Apiato\Core\Generator\Traits;
 
 trait PrinterTrait
 {
-    public function printStartedMessage($containerName, $fileName)
+    public function printStartedMessage($containerName, $fileName): void
     {
         $this->printInfoMessage('> Generating (' . $fileName . ') in (' . $containerName . ') Container.');
     }
@@ -22,7 +22,7 @@ trait PrinterTrait
     /**
      * @param $message
      */
-    public function printErrorMessage($message)
+    public function printErrorMessage($message): void
     {
         $this->error($message);
     }
@@ -30,7 +30,7 @@ trait PrinterTrait
     /**
      * @param $message
      */
-    public function printInfoMessage($message)
+    public function printInfoMessage($message): void
     {
         $this->info($message);
     }

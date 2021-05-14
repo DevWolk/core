@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Containers\{{section-name}}\{{container-name}}\Mails;
 
 use App\Containers\User\Models\User;
@@ -10,18 +12,19 @@ class {{class-name}} extends Mail
 {
     use Queueable;
 
-    protected $recipient;
+    protected User $recipient;
 
     /**
      * {{class-name}} constructor.
-     *
-     * @param $recipient
      */
     public function __construct(User $recipient)
     {
         $this->recipient = $recipient;
     }
 
+    /**
+     * @return $this
+     */
     public function build()
     {
         return $this->view('{{_container-name}}::{{view}}')

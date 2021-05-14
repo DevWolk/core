@@ -5,6 +5,11 @@ namespace Apiato\Core\Traits\TestsTraits\PhpUnit;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Class TestsAuthHelperTrait.
+ *
+ * Tests helper for authentication and authorization.
+ */
 trait TestsAuthHelperTrait
 {
     /**
@@ -18,11 +23,11 @@ trait TestsAuthHelperTrait
     protected ?string $userClass = null;
 
     /**
-     * Roles and permissions, to be attached on the user
+     * Roles and permissions, to be attached on the user.
      */
     protected array $access = [
         'permissions' => '',
-        'roles' => '',
+        'roles'       => '',
     ];
 
     /**
@@ -41,7 +46,6 @@ trait TestsAuthHelperTrait
      * if unauthorized user tried to access your protected endpoint.
      *
      * @param null $userDetails
-     * @return mixed
      */
     public function getTestingUserWithoutAccess($userDetails = null)
     {
@@ -52,21 +56,20 @@ trait TestsAuthHelperTrait
      * Try to get the last logged in User, if not found then create new one.
      * Note: if $userDetails are provided it will always create new user, even
      * if another one was previously created during the execution of your test.
-     *
      * By default Users will be given the Roles and Permissions found int he class
      * `$access` property. But the $access parameter can be used to override the
      * defined roles and permissions in the `$access` property of your class.
      *
      * @param array|null $userDetails what to be attached on the User object
-     * @param array|null $access roles and permissions you'd like to provide this user with
-     * @param bool $createUserAsAdmin should create testing user as admin
-     * @return mixed
+     * @param array|null $access      roles and permissions you'd like to provide this user with
+     * @param bool       $createUserAsAdmin should create testing user as admin
      */
     public function getTestingUser(?array $userDetails = null, ?array $access = null, bool $createUserAsAdmin = false)
     {
         $this->createUserAsAdmin = $createUserAsAdmin;
-        $this->userClass = $this->userclass ?? Config::get('apiato.tests.user-class');
-        $this->userAdminState = Config::get('apiato.tests.user-admin-state');
+        $this->userClass         = $this->userclass ?? Config::get('apiato.tests.user-class');
+        $this->userAdminState    = Config::get('apiato.tests.user-admin-state');
+
         return is_null($userDetails) ? $this->findOrCreateTestingUser($userDetails, $access)
             : $this->createTestingUser($userDetails, $access);
     }
@@ -105,8 +108,8 @@ trait TestsAuthHelperTrait
     private function prepareUserDetails(?array $userDetails = null): array
     {
         $defaultUserDetails = [
-            'name' => $this->faker->name,
-            'email' => $this->faker->email,
+            'name'     => $this->faker->name,
+            'email'    => $this->faker->email,
             'password' => 'testing-password',
         ];
 
@@ -116,7 +119,7 @@ trait TestsAuthHelperTrait
 
     private function prepareUserPassword(?array $userDetails): ?array
     {
-        // get password from the user details or generate one
+        // Get password from the user details or generate one
         $password = $userDetails['password'] ?? $this->faker->password;
 
         // hash the password and set it back at the user details
@@ -130,9 +133,8 @@ trait TestsAuthHelperTrait
         $access = $access ?: $this->getAccess();
 
         $user = $this->setupTestingUserPermissions($user, $access);
-        $user = $this->setupTestingUserRoles($user, $access);
 
-        return $user;
+        return $this->setupTestingUserRoles($user, $access);
     }
 
     private function getAccess(): ?array
@@ -164,7 +166,7 @@ trait TestsAuthHelperTrait
     {
         return [
             'permissions' => null,
-            'roles' => null
+            'roles'       => null,
         ];
     }
 }

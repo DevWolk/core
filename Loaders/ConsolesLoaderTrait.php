@@ -7,9 +7,10 @@ use Illuminate\Support\Facades\File;
 
 trait ConsolesLoaderTrait
 {
-    public function loadConsolesFromContainers($containerPath): void
+    public function loadConsolesFromContainers(string $containerPath): void
     {
         $containerCommandsDirectory = $containerPath . '/UI/CLI/Commands';
+
         $this->loadTheConsoles($containerCommandsDirectory);
     }
 
@@ -32,16 +33,16 @@ trait ConsolesLoaderTrait
 
     private function isRouteFile($consoleFile): bool
     {
-        return $consoleFile->getFilename() === "Routes.php";
+        return $consoleFile->getFilename() === 'Routes.php';
     }
 
     public function loadConsolesFromShip(): void
     {
         $commandsFoldersPaths = [
-            // ship commands
+            // Ship commands
             base_path('app/Ship/Commands'),
-            // core commands
-            __DIR__ . '/../Commands'
+            // Core commands
+            __DIR__ . '/../Commands',
         ];
 
         foreach ($commandsFoldersPaths as $folderPath) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Containers\{{section-name}}\{{container-name}}\Actions;
 
 use App\Containers\{{section-name}}\{{container-name}}\Models\{{model}};
@@ -9,7 +11,7 @@ use App\Ship\Parents\Requests\Request;
 
 class Find{{model}}ByIdAction extends Action
 {
-    public function run(Request $request): {{model}}
+    public function run(Request $request): ?{{model}}
     {
         return app(Find{{model}}ByIdTask::class)->run($request->id);
     }

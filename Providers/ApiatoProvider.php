@@ -15,6 +15,8 @@ class ApiatoProvider extends AbstractMainProvider
     use AutoLoaderTrait;
     use ValidationTrait;
 
+    private const DEFAULT_STRING_LENGTH = 191;
+
     public function boot(): void
     {
         parent::boot();
@@ -22,8 +24,12 @@ class ApiatoProvider extends AbstractMainProvider
         // Autoload most of the Containers and Ship Components
         $this->runLoadersBoot();
 
-        // Solves the "specified key was too long" error, introduced in L5.4
-        Schema::defaultStringLength(191);
+        /**
+         * Solves the "specified key was too long" error, introduced in L5.4.
+         *
+         * @see https://laravel.com/docs/8.x/migrations#index-lengths-mysql-mariadb
+         */
+        Schema::defaultStringLength(self::DEFAULT_STRING_LENGTH);
 
         // Registering custom validation rules
         $this->extendValidationRules();
@@ -41,7 +47,7 @@ class ApiatoProvider extends AbstractMainProvider
     }
 
     /**
-     * Register Overided Base providers
+     * Register Override Base providers.
      * @see \Illuminate\Foundation\Application::registerBaseServiceProviders
      */
     private function overrideLaravelBaseProviders(): void

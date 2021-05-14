@@ -13,9 +13,7 @@ trait ValidationTrait
     public function extendValidationRules(): void
     {
         // Validate String contains no space.
-        Validator::extend('no_spaces', function ($attribute, $value, $parameters, $validator) {
-            return preg_match('/^\S*$/u', $value);
-        }, ['String should not contain space.']);
+        Validator::extend('no_spaces', fn ($attribute, $value, $parameters, $validator) => preg_match('/^\S*$/u', $value), 'String :attribute should not contain space.');
 
         // Validate composite unique ID.
         // Usage: unique_composite:table,this-attribute-column,the-other-attribute-column
@@ -32,6 +30,6 @@ trait ValidationTrait
             $queryResult = $queryBuilder->get();
 
             return $queryResult->isEmpty();
-        }, ["Duplicated record. This record has composite ID and it must be unique."]);
+        }, ['Duplicated record. This record has composite ID and it must be unique.']);
     }
 }

@@ -5,6 +5,11 @@ namespace Apiato\Core\Traits\TestsTraits\PhpUnit;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+/**
+ * Class TestsResponseHelperTrait.
+ *
+ * Tests helper for making formatting and asserting http responses.
+ */
 trait TestsResponseHelperTrait
 {
     public function assertResponseContainKeys($keys): void
@@ -18,20 +23,6 @@ trait TestsResponseHelperTrait
         foreach ($keys as $key) {
             $this->assertTrue(array_key_exists($key, $arrayResponse));
         }
-    }
-
-    /**
-     * @param array $responseContent
-     *
-     * @return  array|mixed
-     */
-    private function removeDataKeyFromResponse(array $responseContent)
-    {
-        if (array_key_exists('data', $responseContent)) {
-            return $responseContent['data'];
-        }
-
-        return $responseContent;
     }
 
     public function assertResponseContainValues($values): void
@@ -59,6 +50,15 @@ trait TestsResponseHelperTrait
         }
     }
 
+    public function assertValidationErrorContain(array $messages): void
+    {
+        $responseContent = $this->getResponseContentObject();
+
+        foreach ($messages as $key => $value) {
+            $this->assertEquals($responseContent->errors->{$key}[0], $value);
+        }
+    }
+
     private function formatToExpectedJson($key, $value): string
     {
         $expected = json_encode([$key => $value]);
@@ -74,12 +74,12 @@ trait TestsResponseHelperTrait
         return trim($expected);
     }
 
-    public function assertValidationErrorContain(array $messages): void
+    private function removeDataKeyFromResponse(array $responseContent): array
     {
-        $responseContent = $this->getResponseContentObject();
-
-        foreach ($messages as $key => $value) {
-            $this->assertEquals($responseContent->errors->{$key}[0], $value);
+        if (array_key_exists('data', $responseContent)) {
+            return $responseContent['data'];
         }
+
+        return $responseContent;
     }
 }

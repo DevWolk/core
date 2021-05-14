@@ -2,7 +2,6 @@
 
 namespace Apiato\Core\Loaders;
 
-
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -12,10 +11,11 @@ trait ConfigsLoaderTrait
     public function loadConfigsFromShip(): void
     {
         $portConfigsDirectory = base_path('app/Ship/Configs');
+
         $this->loadConfigs($portConfigsDirectory);
     }
 
-    private function loadConfigs($configFolder, $namespace = null): void
+    private function loadConfigs(string $configFolder, ?string $namespace = null): void
     {
         if (File::isDirectory($configFolder)) {
             $files = File::files($configFolder);
@@ -35,14 +35,16 @@ trait ConfigsLoaderTrait
 
                     Config::set($namespace . $name, $config);
                 } catch (FileNotFoundException $e) {
+                    // idle
                 }
             }
         }
     }
 
-    public function loadConfigsFromContainers($containerPath): void
+    public function loadConfigsFromContainers(string $containerPath): void
     {
         $containerConfigsDirectory = $containerPath . '/Configs';
+
         $this->loadConfigs($containerConfigsDirectory);
     }
 }

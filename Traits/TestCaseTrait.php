@@ -14,7 +14,7 @@ trait TestCaseTrait
     }
 
     /**
-     * Equivalent to passport:install but enough to run the tests
+     * Equivalent to passport:install but enough to run the tests.
      */
     public function setupPassportOAuth2(): void
     {
@@ -24,7 +24,7 @@ trait TestCaseTrait
             'http://localhost'
         );
 
-        $accessClient = new PersonalAccessClient();
+        $accessClient            = new PersonalAccessClient();
         $accessClient->client_id = $client->id;
         $accessClient->save();
     }

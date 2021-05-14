@@ -10,10 +10,8 @@ trait FileSystemTrait
      * Determine if the file already exists.
      *
      * @param $path
-     *
-     * @return bool
      */
-    protected function alreadyExists($path)
+    protected function alreadyExists($path): bool
     {
         return $this->fileSystem->exists($path);
     }
@@ -21,8 +19,6 @@ trait FileSystemTrait
     /**
      * @param $filePath
      * @param $stubContent
-     *
-     * @return mixed
      */
     public function generateFile($filePath, $stubContent)
     {
@@ -30,14 +26,16 @@ trait FileSystemTrait
     }
 
     /**
-     * If path is for a directory, create it otherwise do nothing
+     * If path is for a directory, create it otherwise do nothing.
      *
      * @param $path
+     *
+     * @return void
      */
     public function createDirectory($path)
     {
         if ($this->alreadyExists($path)) {
-            $this->printErrorMessage($this->fileType . ' already exists');
+            $this->printErrorMessage("{$this->fileName} already exists");
 
             // the file does exist - return but NOT exit
             return;
@@ -47,9 +45,8 @@ trait FileSystemTrait
             if (!$this->fileSystem->isDirectory(dirname($path))) {
                 $this->fileSystem->makeDirectory(dirname($path), 0777, true, true);
             }
-
         } catch (Exception $e) {
-            $this->printErrorMessage('Could not create ' . $path);
+            $this->printErrorMessage("Could not create {$path}");
         }
     }
 }

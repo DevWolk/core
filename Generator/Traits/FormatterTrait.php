@@ -5,37 +5,18 @@ namespace Apiato\Core\Generator\Traits;
 trait FormatterTrait
 {
     /**
-     * @param $string
-     *
-     * @return  string
+     * @param string $string
      */
-    protected function trimString($string)
+    protected function trimString($string): string
     {
         return trim($string);
     }
 
-
     /**
-     * @param $word
-     *
-     * @return  string
+     * @param string $word
      */
-    public function capitalize($word)
+    public function capitalize($word): string
     {
         return ucfirst($word);
-    }
-
-
-    /**
-     * @param $operation
-     * @param $class
-     *
-     * @return  string
-     */
-    public function prependOperationToName($operation, $class)
-    {
-        $className = ($operation == 'list') ? ngettext($class) : $class;
-
-        return $operation . $this->capitalize($className);
     }
 }

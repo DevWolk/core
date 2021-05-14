@@ -24,7 +24,7 @@ class EventJob extends Job implements ShouldQueue
         $this->handler = $handler;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->handler->handle();
     }
